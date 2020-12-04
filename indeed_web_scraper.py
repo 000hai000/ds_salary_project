@@ -1,4 +1,6 @@
 from selenium import webdriver
+from time import sleep
+from random import randint
 
 DRIVER_PATH = '/Users/hainguyen/Python/ds_salary_project/chromedriver'
 driver = webdriver.Chrome(executable_path = DRIVER_PATH)
@@ -27,6 +29,7 @@ descriptions=[]
 for i in range(0,487):
     
     job_card = driver.find_elements_by_xpath('//div[contains(@class,"clickcard")]')
+    sleep(randint(1, 5))
     
     for job in job_card:
        
@@ -86,7 +89,7 @@ for i in range(0,487):
 import pandas as pd
 df=pd.DataFrame()
 df['Title']=titles
-df['Company']=companies
+badf['Company']=companies
 df['Location']=locations
 df['Link']=links
 df['Review']=reviews
