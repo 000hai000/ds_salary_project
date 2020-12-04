@@ -6,7 +6,7 @@ driver = webdriver.Chrome(executable_path = DRIVER_PATH)
 driver.get('https://au.indeed.com')
 
 search_job = driver.find_element_by_xpath('//input[@id="text-input-what"]')
-search_job.send_keys(['data scientist'])
+search_job.send_keys(['data science'])
 
 search_location = driver.find_element_by_xpath('//*[@id="text-input-where"]')
 search_location.send_keys(['victoria'])
@@ -24,7 +24,7 @@ reviews=[]
 salaries = []
 descriptions=[]
 
-for i in range(0,1):
+for i in range(0,487):
     
     job_card = driver.find_elements_by_xpath('//div[contains(@class,"clickcard")]')
     
@@ -65,6 +65,13 @@ for i in range(0,1):
         except:
             salary = "None"      
         salaries.append(salary)
+        
+        try:
+            driver.get(link)
+            description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
+        except:
+            description = "None"
+        descriptions.append(description)
     
     try:
         next_page = driver.find_element_by_xpath('//a[@aria-label={}]//span[@class="pn"]'.format(i+2))
@@ -75,12 +82,6 @@ for i in range(0,1):
         next_page.click()
         
     print("Page: {}".format(str(i+2)))
-    
-for link in links:
-    
-    driver.get(link)
-    jd = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
-    descriptions.append(jd)
     
 import pandas as pd
 df=pd.DataFrame()
