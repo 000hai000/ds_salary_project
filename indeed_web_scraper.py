@@ -29,7 +29,6 @@ descriptions=[]
 for i in range(0,487):
     
     job_card = driver.find_elements_by_xpath('//div[contains(@class,"clickcard")]')
-    sleep(randint(1, 5))
     
     for job in job_card:
        
@@ -85,11 +84,18 @@ for i in range(0,487):
         next_page.click()
         
     print("Page: {}".format(str(i+2)))
+    sleep(randint(1, 5))
+    
+for link in links:
+    driver.get(link)
+    description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
+    descriptions.append(description)
+    sleep(randint(1, 5))
     
 import pandas as pd
 df=pd.DataFrame()
 df['Title']=titles
-badf['Company']=companies
+df['Company']=companies
 df['Location']=locations
 df['Link']=links
 df['Review']=reviews
