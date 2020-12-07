@@ -11,7 +11,7 @@ search_job = driver.find_element_by_xpath('//input[@id="text-input-what"]')
 search_job.send_keys(['data science'])
 
 search_location = driver.find_element_by_xpath('//*[@id="text-input-where"]')
-search_location.send_keys(['victoria'])
+search_location.send_keys(['australia'])
 
 initial_search_button = driver.find_element_by_xpath('//*[@id="whatWhereFormId"]/div[3]/button')
 initial_search_button.click()
@@ -26,7 +26,7 @@ reviews=[]
 salaries = []
 descriptions=[]
 
-for i in range(0,487):
+for i in range(0,145):
     
     job_card = driver.find_elements_by_xpath('//div[contains(@class,"clickcard")]')
     
@@ -67,13 +67,6 @@ for i in range(0,487):
         except:
             salary = "None"      
         salaries.append(salary)
-        
-        try:
-            driver.get(link)
-            description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
-        except:
-            description = "None"
-        descriptions.append(description)
     
     try:
         next_page = driver.find_element_by_xpath('//a[@aria-label={}]//span[@class="pn"]'.format(i+2))
@@ -86,12 +79,6 @@ for i in range(0,487):
     print("Page: {}".format(str(i+2)))
     sleep(randint(1, 5))
     
-for link in links:
-    driver.get(link)
-    description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
-    descriptions.append(description)
-    sleep(randint(1, 5))
-    
 import pandas as pd
 df=pd.DataFrame()
 df['Title']=titles
@@ -100,6 +87,21 @@ df['Location']=locations
 df['Link']=links
 df['Review']=reviews
 df['Salary']=salaries
-df['Description']=descriptions
 
 df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs.csv', index=False, header=True)
+
+df_complete = df.drop_duplicates()
+
+descriptions=[]
+
+links = df_complete['Link']
+
+for link in links:
+    driver.get(link)
+    description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
+    descriptions.append(description)
+    sleep(randint(5, 15))
+    
+df_complete['Description']=descriptions 
+
+df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs_complete.csv', index=False, header=True)
