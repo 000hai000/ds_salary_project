@@ -88,20 +88,15 @@ df['Link']=links
 df['Review']=reviews
 df['Salary']=salaries
 
-df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs.csv', index=False, header=True)
+df = df.drop_duplicates()
 
-df_complete = df.drop_duplicates()
-
-descriptions=[]
-
-links = df_complete['Link']
-
+links = df['Link']
 for link in links:
     driver.get(link)
     description = driver.find_element_by_xpath('//div[@id="jobDescriptionText"]').text
     descriptions.append(description)
-    sleep(randint(5, 15))
+    sleep(randint(1, 5))
     
-df_complete['Description']=descriptions 
+df['Description']=descriptions 
 
-df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs_complete.csv', index=False, header=True)
+df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs.csv', index=False, header=True)
