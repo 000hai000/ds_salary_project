@@ -26,7 +26,7 @@ reviews=[]
 salaries=[]
 descriptions=[]
 
-for i in range(0,1):
+for i in range(0,93):
     
     job_card = driver.find_elements_by_xpath('//div[contains(@data-search-sol-meta,"searchRequestToken")]')
     
@@ -66,7 +66,7 @@ for i in range(0,1):
     next_page.click()
         
     print("Page: {}".format(str(i+2)))
-    sleep(randint(1, 5))
+    sleep(randint(3, 10))
     
 import pandas as pd
 df=pd.DataFrame()
@@ -75,8 +75,6 @@ df['Company']=companies
 df['Location']=locations
 df['Link']=links
 df['Salary']=salaries
-
-df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/seek_ds_jobs.csv', index=False, header=True)
 
 df = df.drop_duplicates()
 
@@ -96,7 +94,7 @@ for link in links:
         description = "None"
     descriptions.append(description)
     
-    sleep(randint(1, 5))
+    sleep(randint(3, 10))
 
 df['Review']=reviews
 df['Description']=descriptions 
