@@ -3,6 +3,7 @@ import numpy as np
 import copy
 
 df_indeed = pd.read_csv('indeed_ds_jobs.csv')
+df_indeed = df_indeed.drop_duplicates()
 df_indeed = df_indeed[df_indeed['Salary'] != 'None']
 df_indeed = df_indeed.reset_index(drop=True)
 
@@ -30,6 +31,7 @@ for i in range(len(df_indeed['Minimum Salary'])):
         df_indeed.loc[i, 'Average Salary'] = df_indeed['Average Salary'][i] * 7 * 52
         
 df_seek = pd.read_csv('seek_ds_jobs.csv')
+df_seek = df_seek.drop_duplicates()
 df_seek.fillna('None', inplace=True)
 df_seek = df_seek[df_seek['Salary'] != 'None']
 df_seek = df_seek[df_seek['Salary'].str.contains(r"[0-9]")]
@@ -142,5 +144,62 @@ df_seek = df_seek[df_seek['Maximum Salary'] > 10000]
 df_seek = df_seek[df_seek['Minimum Salary'] < 2000000]
 df_seek = df_seek[df_seek['Maximum Salary'] < 2000000]
 
+#combining the 2 dataframes
 df = pd.concat([df_indeed, df_seek])
 df = df.reset_index(drop=True)
+
+#Skills required
+df['Python'] = df['Description'].apply(lambda x: True if 'python' in x.lower() else False)
+df['R'] = df['Description'].apply(lambda x: True if ' r ' in x.lower() else False)
+df['Spark'] = df['Description'].apply(lambda x: True if 'spark' in x.lower() else False)
+df['SQL'] = df['Description'].apply(lambda x: True if 'sql' in x.lower() else False)
+df['Excel'] = df['Description'].apply(lambda x: True if 'excel' in x.lower() or 'vba' in x.lower() else False)
+df['AWS'] = df['Description'].apply(lambda x: True if 'amazon' in x.lower() or 'aws' in x.lower() else False)
+df['Tableau'] = df['Description'].apply(lambda x: True if 'tableau' in x.lower() else False)
+
+#Casual or part time
+df['Part or Casual'] = df['Description'].apply(lambda x: True if 'part time' in x.lower() or 'part-time' in x.lower() or 'casual' in x.lower() else False)
+
+#title simplifier
+def title_simplifier(title):
+    if 'data scientist' in title.lower() or 'data specialist' in title.lower():
+        return 'data scientist'
+    elif 'data engineer' in title.lower():
+        return 'data engineer'
+    elif 'analyst' in title.lower():
+        return 'data analyst'
+    elif 'machine learning' in title.lower():
+        return 'machine learning expert'
+    elif 'software engineer' in title.lower():
+        return 'software engineer'
+    elif 'research' in title.lower() or 'researcher' in title.lower():
+        return 'researcher'
+    else:
+        return 'None'
+df['Simplified Title'] = df['Title'].apply(title_simplifier)
+
+#job description length
+df['Description Length'] = df['Description'].apply(lambda x: len(x))
+
+#Formatting State
+def state(location):
+    if 'sydney' in location.lower() or 'nsw' in location.lower() or 'new south wales' in location.lower() or 'wollongong' in location.lower():
+        return 'New South Wales'
+    elif 'melbourne' in location.lower() or 'vic' in location.lower() or 'victoria' in location.lower():
+        return 'Victoria'
+    elif 'brisbane' in location.lower() or 'qld' in location.lower() or 'queensland' in location.lower() or 'toowoomba' in location.lower():
+        return 'Queensland'
+    elif 'perth' in location.lower() or 'wa' in location.lower() or 'western australia' in location.lower():
+        return 'Western Australia'
+    elif 'canberra' in location.lower() or 'act' in location.lower() or 'australian capital territory' in location.lower():
+        return 'Australian Capital Territory'
+    elif 'adelaide' in location.lower() or 'sa' in location.lower() or 'south australia' in location.lower():
+        return 'South Australia'
+    elif 'hobart' in location.lower() or 'tas' in location.lower() or 'tasmania' in location.lower():
+        return 'Tasmania'
+    else:
+        return 'None'
+df['State'] = df['Location'].apply(state)
+
+#save as csv
+df.to_csv(r'ds_jobs.csv', index=False, header=True)
