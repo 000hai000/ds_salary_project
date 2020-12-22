@@ -99,4 +99,4 @@ for link in links:
     
 df['Description']=descriptions 
 
-df.to_csv(r'/Users/hainguyen/Python/ds_salary_project/indeed_ds_jobs.csv', index=False, header=True)
+df.to_csv(r'indeed_ds_jobs.csv', index=False, header=True)
